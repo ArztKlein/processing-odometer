@@ -51,8 +51,7 @@ class Odometer{
     this.pg.textSize(this.fontSize);
     this.pg.textAlign(LEFT, BOTTOM);
     this.pg.fill(255);
-    
-    //float nextLeftX = this.x - (pg.textWidth(stringValue) / 2);
+
     float nextLeftX = this.x;
     
     float currentX = this.leftX;
