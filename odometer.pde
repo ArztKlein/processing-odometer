@@ -5,7 +5,7 @@ class Odometer{
   PGraphics pg, mask;
   float leftX, totalWidth;
  
-  Odometer(int x, int y, int fontSize){
+  Odometer(int x, int y, int fontSize) {
     this.x = x;
     this.y = y;
     this.fontSize = fontSize;
@@ -16,28 +16,28 @@ class Odometer{
     this.drawMask();
   }
   
-  void update(int value){
-    if(this.timer >= odometerSlideTime){
+  void update(int value) {
+    if (this.timer >= odometerSlideTime) {
       this.timer = 0;
       this.previousValue = this.value;
       this.value = value;
     }
   }
   
-  void setPos(int x, int y){
+  void setPos(int x, int y) {
     this.x = x;
     this.y = y;
     this.drawMask();
   }
   
-  void draw(){
+  void draw() {
     this.timer++;
     
     pg.beginDraw();
     pg.background(18);
     
     
-    if(this.timer >= odometerSlideTime){
+    if (this.timer >= odometerSlideTime) {
       this.previousValue = this.value;
     }
     
@@ -46,8 +46,6 @@ class Odometer{
     
     ArrayList<HashMap<String,Integer>> changes = getChanges(stringPreviousValue, stringValue);
     
-    
-    
     this.pg.textSize(this.fontSize);
     this.pg.textAlign(LEFT, BOTTOM);
     this.pg.fill(255);
@@ -55,19 +53,19 @@ class Odometer{
     float nextLeftX = this.x;
     
     float currentX = this.leftX;
-    for(int i = 0; i < stringValue.length(); i++){
+    for (int i = 0; i < stringValue.length(); i++) {
       HashMap<String,Integer> change = this.findChange(changes, i);
-      if(change != null){
+      if (change != null) {
         int difference = change.get("change");
         int from = change.get("from");
         int next = change.get("next");
         float percentage = float(this.timer) / float(odometerSlideTime);
         
-        if(difference > 0){
-          for(int j = 0; j < abs(difference) + 1; j++){
+        if (difference > 0) {
+          for(int j = 0; j < abs(difference) + 1; j++) {
           int number = from + j;
           
-          if(number >= 10){
+          if (number >= 10) {
               number = int(str(str(number).charAt(str(number).length() - 1)));
            }
           
@@ -77,11 +75,11 @@ class Odometer{
           float currentY = lerp(startY, endY, percentage);
           this.pg.text(number, currentX, currentY);
          }
-        }else{
-          for(int j = 0; j < abs(difference) + 1; j++){
+        } else {
+          for (int j = 0; j < abs(difference) + 1; j++) {
             int number = from - j;
             
-            if(number >= 10){
+            if (number >= 10) {
               number = int(str(str(number).charAt(str(number).length() - 1)));
            }
             
@@ -91,20 +89,16 @@ class Odometer{
             float currentY = lerp(startY, endY, percentage);
             this.pg.text(number, currentX, currentY);
          }
-         
        }
-        
-        
-      }else{
+      } else {
         this.pg.text(stringValue.charAt(i), currentX, this.y);
       }
-      
       currentX += pg.textWidth(stringValue.charAt(i));
     }
     
     float totalWidth = currentX - this.leftX;
     
-    if(nextLeftX != this.leftX || totalWidth != this.totalWidth){
+    if (nextLeftX != this.leftX || totalWidth != this.totalWidth) {
       this.leftX = nextLeftX;
       this.totalWidth = totalWidth;
       this.drawMask();
@@ -115,11 +109,11 @@ class Odometer{
     image(pg, 0, 0);  
   }
   
-  ArrayList<HashMap<String,Integer>> getChanges(String prev, String next){
+  ArrayList<HashMap<String,Integer>> getChanges(String prev, String next) {
     ArrayList<HashMap<String,Integer>> changes = new ArrayList<HashMap<String,Integer>>();
     
-    for(int i = 0; i < min(prev.length(), next.length()); i++){
-      if(prev.charAt(i) != next.charAt(i)){
+    for (int i = 0; i < min(prev.length(), next.length()); i++) {
+      if (prev.charAt(i) != next.charAt(i)) {
         HashMap<String,Integer> hm = new HashMap<String,Integer>();
         int prevInt = int(str(prev.charAt(i)));
         int nextInt = int(str(next.charAt(i)));
@@ -127,15 +121,14 @@ class Odometer{
         hm.put("from", prevInt);
         hm.put("next", nextInt);
         hm.put("digit", i);
-        if(i > 0 && difference < 0){
+        
+        if (i > 0 && difference < 0) {
           int prevCharPrev = int(str(prev.charAt(i - 1)));
           int prevCharNext = int(str(next.charAt(i - 1)));
-          if(prevCharNext < prevCharPrev){
+          if (prevCharNext < prevCharPrev) {
             int proposedDifference = 10 - (prevInt - nextInt);
-            if(abs(proposedDifference) < abs(difference)){
-              
+            if (abs(proposedDifference) < abs(difference)) {
               difference = proposedDifference;
-              
             }
           }
         }
@@ -148,17 +141,17 @@ class Odometer{
     return changes; 
   }
   
-  HashMap<String,Integer> findChange(ArrayList<HashMap<String,Integer>> changes, int digit){
-    for(int i = 0; i < changes.size(); i++){
+  HashMap<String,Integer> findChange(ArrayList<HashMap<String,Integer>> changes, int digit) {
+    for (int i = 0; i < changes.size(); i++) {
       HashMap<String,Integer> change = changes.get(i);
-      if(change.get("digit") == digit){
+      if (change.get("digit") == digit) {
         return change;
       }
     }
     return null;  
   }
   
-  void drawMask(){
+  void drawMask() {
     this.mask.beginDraw();
     
     this.mask.background(0);
